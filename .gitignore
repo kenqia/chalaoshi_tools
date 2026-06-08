@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+debug_network/
+debug_comments/
+
+chalaoshi_export/
+debug_comment_network.py
+test.py
+tool.py
