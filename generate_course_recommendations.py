@@ -201,7 +201,7 @@ def clamp(value, low, high):
     return max(low, min(high, value))
 
 
-def build_recommendations(conn):
+def build_recommendations(conn, min_sample=10, min_gpa=3.8):
     comments_by_teacher = load_comments(conn)
     recommendations = []
 
@@ -213,7 +213,7 @@ def build_recommendations(conn):
 
         avg_gpa = numeric(avg_gpa_raw)
         sample_count = parse_sample_count(sample_raw)
-        if avg_gpa is None or sample_count < 10 or avg_gpa < 3.8:
+        if avg_gpa is None or sample_count < min_sample or avg_gpa < min_gpa:
             continue
 
         teacher_score = numeric(teacher_score_raw)
@@ -335,7 +335,7 @@ def export_csv(rows, path):
         "relevance", "risk", "course_easy", "course_hard", "url",
     ]
     with path.open("w", newline="", encoding="utf-8-sig") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         for row in rows:
             writer.writerow({field: row.get(field) for field in fields})
@@ -355,9 +355,8 @@ def render_html(rows, stats, generated_at):
     ][:6]
 
     def top_rows(items):
-        return "".join(
-            f"""
-            <a class="pick" href="{html.escape(item['url'])}" target="_blank" rel="noopener">
+        return "\n".join(
+            f"""            <a class="pick" href="{html.escape(item['url'])}" target="_blank" rel="noopener">
               <span class="pick-rank">{index:02d}</span>
               <span class="pick-main">
                 <strong>{html.escape(item['course'])}</strong>
@@ -365,8 +364,7 @@ def render_html(rows, stats, generated_at):
               </span>
               <span class="pick-gpa">{item['avg_gpa']:.2f}<small>GPA</small></span>
               <span class="pick-meta">{item['sample_label']} 样本<br>{'未知' if item['checkin_ratio'] is None else f"{item['checkin_ratio']:.1f}%"} 点名</span>
-            </a>
-            """
+            </a>"""
             for index, item in enumerate(items, 1)
         )
 

@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>我的查老师推荐表</title>
+  <style>
+    :root {
+      --paper: #f3f0e7; --surface: #fffef8; --ink: #17211d;
+      --muted: #667069; --line: #c9c8bd; --green: #176247;
+      --blue: #245c8a; --amber: #9a5b0b;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font-family: "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; letter-spacing: 0; }
+    header { background: var(--surface); border-bottom: 1px solid var(--ink); }
+    .head, main { max-width: 1320px; margin: 0 auto; padding: 24px; }
+    .head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; }
+    h1 { margin: 0; font-family: "Noto Serif CJK SC", "Songti SC", serif; font-size: 42px; }
+    .prompt { margin: 12px 0 0; color: var(--muted); line-height: 1.7; overflow-wrap: anywhere; }
+    .stamp { border-left: 4px solid var(--green); padding-left: 12px; white-space: nowrap; }
+    .stamp strong, .stamp small, td small { display: block; }
+    .stamp small, td small { color: var(--muted); margin-top: 5px; }
+    .understanding { padding: 18px 0 22px; border-bottom: 1px solid var(--ink); }
+    h2 { margin: 0 0 12px; font: 700 20px "Noto Serif CJK SC", "Songti SC", serif; }
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip, .tag { display: inline-block; border-radius: 3px; font-size: 11px; }
+    .chip { padding: 6px 9px; color: var(--blue); background: #dce8f0; }
+    .tag { margin: 2px 4px 2px 0; padding: 3px 6px; color: var(--green); background: #dce9df; }
+    .toolbar { display: flex; justify-content: space-between; gap: 16px; align-items: center; margin-top: 24px; }
+    .toolbar p { color: var(--muted); font-size: 12px; }
+    input { width: min(360px, 100%); min-height: 40px; padding: 8px 10px; border: 1px solid var(--ink); border-radius: 4px; background: var(--surface); font: inherit; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--ink); background: var(--surface); }
+    table { width: 100%; min-width: 960px; border-collapse: collapse; }
+    th { padding: 10px 9px; color: var(--surface); background: var(--ink); text-align: left; font-size: 11px; white-space: nowrap; }
+    td { padding: 12px 9px; border-bottom: 1px solid var(--line); font-size: 12px; vertical-align: top; }
+    tbody tr:hover { background: #edf2e9; }
+    a { color: var(--ink); font-size: 14px; font-weight: 800; text-decoration: none; }
+    a:hover { color: var(--green); text-decoration: underline; }
+    .rank { color: var(--muted); font-family: ui-monospace, monospace; }
+    .score { color: var(--blue); font: 800 16px ui-monospace, monospace; }
+    .gpa { color: var(--green); font: 900 18px ui-monospace, monospace; }
+    .empty { padding: 32px; color: var(--muted); text-align: center; }
+    footer { max-width: 1320px; margin: 0 auto; padding: 0 24px 36px; color: var(--muted); font-size: 11px; line-height: 1.7; }
+    @media (max-width: 700px) {
+      .head { grid-template-columns: 1fr; }
+      h1 { font-size: 32px; }
+      .toolbar { align-items: stretch; flex-direction: column; }
+      input { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="head">
+      <div><h1>我的课程推荐表</h1><p class="prompt">“给分高最重要，最好不点名、事少，软件相关，样本至少30，排除体育和实习，前50门课”</p></div>
+      <div class="stamp"><strong>2026-06-09 10:15</strong><small>50 个结果</small></div>
+    </div>
+  </header>
+  <main>
+    <section class="understanding"><h2>系统理解</h2><div class="chips"><span class="chip">课程 GPA × 10</span><span class="chip">少点名 × 3</span><span class="chip">事少轻松 × 3</span><span class="chip">专业相关 × 2.5</span><span class="chip">跨专业风险 × 1.3</span><span class="chip">老师评分 × 1.2</span><span class="chip">样本可信度 × 1</span><span class="chip">GPA ≥ 3.8</span><span class="chip">样本 ≥ 30</span><span class="chip">排除：体育、实习</span></div></section>
+    <div class="toolbar"><h2>课程排序</h2><input id="search" type="search" placeholder="搜索课程、老师或学院"></div>
+    <p id="count">50 个结果</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>课程</th><th>匹配分</th><th>最高 / 平均 GPA</th><th>样本</th><th>老师评分</th><th>点名率</th><th>匹配理由</th></tr></thead>
+        <tbody id="rows">
+          <tr data-search="数学软件 王何宇 数学科学学院">
+            <td class="rank">01</td>
+            <td><a href="https://chalaoshi.de/t/2167/" target="_blank" rel="noopener">数学软件</a><small>王何宇 · 数学科学学院</small></td>
+            <td class="score">87.7</td>
+            <td class="gpa">4.71</td>
+            <td>500</td>
+            <td>9.91</td>
+            <td>6.4%</td>
+            <td><span class="tag">GPA 4.71</span><span class="tag">500 个样本</span><span class="tag">点名率 6%</span><span class="tag">评论偏轻松</span></td>
+          </tr>
+          <tr data-search="b/s体系软件设计 胡晓军 计算机科学与技术学院">
+            <td class="rank">02</td>
+            <td><a href="https://chalaoshi.de/t/1453/" target="_blank" rel="noopener">B/S体系软件设计</a><small>胡晓军 · 计算机科学与技术学院</small></td>
+            <td class="score">82.5</td>
+            <td class="gpa">4.55</td>
+            <td>500</td>
+            <td>9.81</td>
+            <td>6.8%</td>
+            <td><span class="tag">GPA 4.55</span><span class="tag">500 个样本</span><span class="tag">点名率 7%</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="社会调查 卢鹭 人文学院">
+            <td class="rank">03</td>
+            <td><a href="https://chalaoshi.de/t/6776/" target="_blank" rel="noopener">社会调查</a><small>卢鹭 · 人文学院</small></td>
+            <td class="score">81.0</td>
+            <td class="gpa">5.00</td>
+            <td>40</td>
+            <td>9.49</td>
+            <td>3.4%</td>
+            <td><span class="tag">GPA 5.00</span><span class="tag">点名率 3%</span></td>
+          </tr>
+          <tr data-search="自然语言处理导论 汤斯亮 计算机科学与技术学院">
+            <td class="rank">04</td>
+            <td><a href="https://chalaoshi.de/t/3462/" target="_blank" rel="noopener">自然语言处理导论</a><small>汤斯亮 · 计算机科学与技术学院</small></td>
+            <td class="score">80.2</td>
+            <td class="gpa">4.68</td>
+            <td>447</td>
+            <td>9.34</td>
+            <td>37.0%</td>
+            <td><span class="tag">GPA 4.68</span><span class="tag">447 个样本</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="ros与机器人仿真软件 高飞 信息与电子工程学院">
+            <td class="rank">05</td>
+            <td><a href="https://chalaoshi.de/t/5512/" target="_blank" rel="noopener">ROS与机器人仿真软件</a><small>高飞 · 信息与电子工程学院</small></td>
+            <td class="score">79.5</td>
+            <td class="gpa">4.52</td>
+            <td>100</td>
+            <td>9.02</td>
+            <td>0.0%</td>
+            <td><span class="tag">GPA 4.52</span><span class="tag">100 个样本</span><span class="tag">点名率 0%</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="软件安全 周亚金 计算机科学与技术学院">
+            <td class="rank">06</td>
+            <td><a href="https://chalaoshi.de/t/5580/" target="_blank" rel="noopener">软件安全</a><small>周亚金 · 计算机科学与技术学院</small></td>
+            <td class="score">79.4</td>
+            <td class="gpa">4.68</td>
+            <td>72</td>
+            <td>8.85</td>
+            <td>20.6%</td>
+            <td><span class="tag">GPA 4.68</span><span class="tag">72 个样本</span><span class="tag">点名率 21%</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="大规模信息系统开发试验 袁昕 计算机科学与技术学院">
+            <td class="rank">07</td>
+            <td><a href="https://chalaoshi.de/t/5302/" target="_blank" rel="noopener">大规模信息系统开发试验</a><small>袁昕 · 计算机科学与技术学院</small></td>
+            <td class="score">79.2</td>
+            <td class="gpa">4.76</td>
+            <td>121</td>
+            <td>8.15</td>
+            <td>9.1%</td>
+            <td><span class="tag">GPA 4.76</span><span class="tag">121 个样本</span><span class="tag">点名率 9%</span><span class="tag">相关</span></td>
+          </tr>
+          <tr data-search="软件安全原理和实践 周亚金 计算机科学与技术学院">
+            <td class="rank">08</td>
+            <td><a href="https://chalaoshi.de/t/5580/" target="_blank" rel="noopener">软件安全原理和实践</a><small>周亚金 · 计算机科学与技术学院</small></td>
+            <td class="score">79.0</td>
+            <td class="gpa">4.70</td>
+            <td>120</td>
+            <td>8.85</td>
+            <td>20.6%</td>
+            <td><span class="tag">GPA 4.70</span><span class="tag">120 个样本</span><span class="tag">点名率 21%</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="课程综合实践ⅱ 袁昕 计算机科学与技术学院">
+            <td class="rank">09</td>
+            <td><a href="https://chalaoshi.de/t/5302/" target="_blank" rel="noopener">课程综合实践Ⅱ</a><small>袁昕 · 计算机科学与技术学院</small></td>
+            <td class="score">79.0</td>
+            <td class="gpa">4.67</td>
+            <td>162</td>
+            <td>8.15</td>
+            <td>9.1%</td>
+            <td><span class="tag">GPA 4.67</span><span class="tag">162 个样本</span><span class="tag">点名率 9%</span><span class="tag">评论偏轻松</span></td>
+          </tr>
+          <tr data-search="保护生物学（甲） 方盛国 生命科学学院">
+            <td class="rank">10</td>
+            <td><a href="https://chalaoshi.de/t/2533/" target="_blank" rel="noopener">保护生物学（甲）</a><small>方盛国 · 生命科学学院</small></td>
+            <td class="score">78.8</td>
+            <td class="gpa">4.83</td>
+            <td>256</td>
+            <td>9.48</td>
+            <td>25.0%</td>
+            <td><span class="tag">GPA 4.83</span><span class="tag">256 个样本</span><span class="tag">点名率 25%</span><span class="tag">评论偏轻松</span></td>
+          </tr>
+          <tr data-search="医学人工智能 黄正行 生物医学工程与仪器科学学院">
+            <td class="rank">11</td>
+            <td><a href="https://chalaoshi.de/t/3761/" target="_blank" rel="noopener">医学人工智能</a><small>黄正行 · 生物医学工程与仪器科学学院</small></td>
+            <td class="score">78.2</td>
+            <td class="gpa">4.52</td>
+            <td>32</td>
+            <td>9.38</td>
+            <td>15.8%</td>
+            <td><span class="tag">GPA 4.52</span><span class="tag">点名率 16%</span><span class="tag">评论偏轻松</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="人工智能前沿 吴飞 计算机科学与技术学院">
+            <td class="rank">12</td>
+            <td><a href="https://chalaoshi.de/t/1877/" target="_blank" rel="noopener">人工智能前沿</a><small>吴飞 · 计算机科学与技术学院</small></td>
+            <td class="score">78.1</td>
+            <td class="gpa">4.60</td>
+            <td>86</td>
+            <td>9.49</td>
+            <td>30.9%</td>
+            <td><span class="tag">GPA 4.60</span><span class="tag">86 个样本</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="人工智能实践 杨洋 求是学院">
+            <td class="rank">13</td>
+            <td><a href="https://chalaoshi.de/t/4782/" target="_blank" rel="noopener">人工智能实践</a><small>杨洋 · 求是学院</small></td>
+            <td class="score">77.7</td>
+            <td class="gpa">4.83</td>
+            <td>55</td>
+            <td>9.79</td>
+            <td>53.7%</td>
+            <td><span class="tag">GPA 4.83</span><span class="tag">55 个样本</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="药理学实验 朱虹 药学院">
+            <td class="rank">14</td>
+            <td><a href="https://chalaoshi.de/t/3495/" target="_blank" rel="noopener">药理学实验</a><small>朱虹 · 药学院</small></td>
+            <td class="score">77.5</td>
+            <td class="gpa">4.90</td>
+            <td>134</td>
+            <td>8.48</td>
+            <td>0.0%</td>
+            <td><span class="tag">GPA 4.90</span><span class="tag">134 个样本</span><span class="tag">点名率 0%</span></td>
+          </tr>
+          <tr data-search="印度哲学研究 何欢欢 人文学院">
+            <td class="rank">15</td>
+            <td><a href="https://chalaoshi.de/t/5038/" target="_blank" rel="noopener">印度哲学研究</a><small>何欢欢 · 人文学院</small></td>
+            <td class="score">77.3</td>
+            <td class="gpa">4.91</td>
+            <td>69</td>
+            <td>9.85</td>
+            <td>20.0%</td>
+            <td><span class="tag">GPA 4.91</span><span class="tag">69 个样本</span><span class="tag">点名率 20%</span></td>
+          </tr>
+          <tr data-search="人工智能引论 黄正行 生物医学工程与仪器科学学院">
+            <td class="rank">16</td>
+            <td><a href="https://chalaoshi.de/t/3761/" target="_blank" rel="noopener">人工智能引论</a><small>黄正行 · 生物医学工程与仪器科学学院</small></td>
+            <td class="score">77.2</td>
+            <td class="gpa">4.25</td>
+            <td>58</td>
+            <td>9.38</td>
+            <td>15.8%</td>
+            <td><span class="tag">58 个样本</span><span class="tag">点名率 16%</span><span class="tag">评论偏轻松</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="艺术人类学 王婧 传媒与国际文化学院">
+            <td class="rank">17</td>
+            <td><a href="https://chalaoshi.de/t/2406/" target="_blank" rel="noopener">艺术人类学</a><small>王婧 · 传媒与国际文化学院</small></td>
+            <td class="score">77.1</td>
+            <td class="gpa">4.78</td>
+            <td>324</td>
+            <td>9.34</td>
+            <td>29.7%</td>
+            <td><span class="tag">GPA 4.78</span><span class="tag">324 个样本</span><span class="tag">点名率 30%</span><span class="tag">评论偏轻松</span></td>
+          </tr>
+          <tr data-search="工程实践 韩劲松 计算机科学与技术学院">
+            <td class="rank">18</td>
+            <td><a href="https://chalaoshi.de/t/5591/" target="_blank" rel="noopener">工程实践</a><small>韩劲松 · 计算机科学与技术学院</small></td>
+            <td class="score">77.0</td>
+            <td class="gpa">4.82</td>
+            <td>78</td>
+            <td>7.72</td>
+            <td>23.5%</td>
+            <td><span class="tag">GPA 4.82</span><span class="tag">78 个样本</span><span class="tag">点名率 24%</span><span class="tag">相关</span></td>
+          </tr>
+          <tr data-search="人工智能 吴飞 计算机科学与技术学院">
+            <td class="rank">19</td>
+            <td><a href="https://chalaoshi.de/t/1877/" target="_blank" rel="noopener">人工智能</a><small>吴飞 · 计算机科学与技术学院</small></td>
+            <td class="score">76.8</td>
+            <td class="gpa">4.30</td>
+            <td>341</td>
+            <td>9.49</td>
+            <td>30.9%</td>
+            <td><span class="tag">341 个样本</span><span class="tag">评论偏轻松</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="美学导论 陈玮 医学院">
+            <td class="rank">20</td>
+            <td><a href="https://chalaoshi.de/t/2337/" target="_blank" rel="noopener">美学导论</a><small>陈玮 · 医学院</small></td>
+            <td class="score">76.4</td>
+            <td class="gpa">4.80</td>
+            <td>216</td>
+            <td>9.34</td>
+            <td>5.6%</td>
+            <td><span class="tag">GPA 4.80</span><span class="tag">216 个样本</span><span class="tag">点名率 6%</span></td>
+          </tr>
+          <tr data-search="智能控制系统设计与实践 姚维 电气工程学院">
+            <td class="rank">21</td>
+            <td><a href="https://chalaoshi.de/t/1793/" target="_blank" rel="noopener">智能控制系统设计与实践</a><small>姚维 · 电气工程学院</small></td>
+            <td class="score">76.4</td>
+            <td class="gpa">4.76</td>
+            <td>68</td>
+            <td>9.04</td>
+            <td>22.2%</td>
+            <td><span class="tag">GPA 4.76</span><span class="tag">68 个样本</span><span class="tag">点名率 22%</span><span class="tag">相关</span></td>
+          </tr>
+          <tr data-search="程序设计与算法基础 应晶 城市学院">
+            <td class="rank">22</td>
+            <td><a href="https://chalaoshi.de/t/2544/" target="_blank" rel="noopener">程序设计与算法基础</a><small>应晶 · 城市学院</small></td>
+            <td class="score">76.4</td>
+            <td class="gpa">4.46</td>
+            <td>149</td>
+            <td>9.88</td>
+            <td>19.2%</td>
+            <td><span class="tag">GPA 4.46</span><span class="tag">149 个样本</span><span class="tag">点名率 19%</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="哲学导论 陈玮 医学院">
+            <td class="rank">23</td>
+            <td><a href="https://chalaoshi.de/t/2337/" target="_blank" rel="noopener">哲学导论</a><small>陈玮 · 医学院</small></td>
+            <td class="score">76.3</td>
+            <td class="gpa">4.84</td>
+            <td>54</td>
+            <td>9.34</td>
+            <td>5.6%</td>
+            <td><span class="tag">GPA 4.84</span><span class="tag">54 个样本</span><span class="tag">点名率 6%</span></td>
+          </tr>
+          <tr data-search="人工智能前沿 吴飞 传媒与国际文化学院">
+            <td class="rank">24</td>
+            <td><a href="https://chalaoshi.de/t/5016/" target="_blank" rel="noopener">人工智能前沿</a><small>吴飞 · 传媒与国际文化学院</small></td>
+            <td class="score">76.3</td>
+            <td class="gpa">4.60</td>
+            <td>86</td>
+            <td>7.37</td>
+            <td>22.9%</td>
+            <td><span class="tag">GPA 4.60</span><span class="tag">86 个样本</span><span class="tag">点名率 23%</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="政治经济学导论 俞彬 经济学院">
+            <td class="rank">25</td>
+            <td><a href="https://chalaoshi.de/t/3464/" target="_blank" rel="noopener">政治经济学导论</a><small>俞彬 · 经济学院</small></td>
+            <td class="score">76.3</td>
+            <td class="gpa">4.54</td>
+            <td>401</td>
+            <td>9.91</td>
+            <td>12.4%</td>
+            <td><span class="tag">GPA 4.54</span><span class="tag">401 个样本</span><span class="tag">点名率 12%</span><span class="tag">评论偏轻松</span></td>
+          </tr>
+          <tr data-search="房地产金融与经济 蔡庆兵 经济学院">
+            <td class="rank">26</td>
+            <td><a href="https://chalaoshi.de/t/452/" target="_blank" rel="noopener">房地产金融与经济</a><small>蔡庆兵 · 经济学院</small></td>
+            <td class="score">76.3</td>
+            <td class="gpa">4.52</td>
+            <td>421</td>
+            <td>9.96</td>
+            <td>12.3%</td>
+            <td><span class="tag">GPA 4.52</span><span class="tag">421 个样本</span><span class="tag">点名率 12%</span><span class="tag">评论偏轻松</span></td>
+          </tr>
+          <tr data-search="程序设计与算法基础 应晶 计算机科学与技术学院">
+            <td class="rank">27</td>
+            <td><a href="https://chalaoshi.de/t/5102/" target="_blank" rel="noopener">程序设计与算法基础</a><small>应晶 · 计算机科学与技术学院</small></td>
+            <td class="score">76.3</td>
+            <td class="gpa">4.46</td>
+            <td>149</td>
+            <td>9.69</td>
+            <td>22.7%</td>
+            <td><span class="tag">GPA 4.46</span><span class="tag">149 个样本</span><span class="tag">点名率 23%</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="全生命周期健康ii 宋超 心理与行为科学系">
+            <td class="rank">28</td>
+            <td><a href="https://chalaoshi.de/t/3711/" target="_blank" rel="noopener">全生命周期健康II</a><small>宋超 · 心理与行为科学系</small></td>
+            <td class="score">76.2</td>
+            <td class="gpa">4.88</td>
+            <td>258</td>
+            <td>9.60</td>
+            <td>21.2%</td>
+            <td><span class="tag">GPA 4.88</span><span class="tag">258 个样本</span><span class="tag">点名率 21%</span></td>
+          </tr>
+          <tr data-search="政治经济学 俞彬 经济学院">
+            <td class="rank">29</td>
+            <td><a href="https://chalaoshi.de/t/3464/" target="_blank" rel="noopener">政治经济学</a><small>俞彬 · 经济学院</small></td>
+            <td class="score">76.1</td>
+            <td class="gpa">4.51</td>
+            <td>500</td>
+            <td>9.91</td>
+            <td>12.4%</td>
+            <td><span class="tag">GPA 4.51</span><span class="tag">500 个样本</span><span class="tag">点名率 12%</span><span class="tag">评论偏轻松</span></td>
+          </tr>
+          <tr data-search="自然语言处理导论 汤斯亮 信息科学与工程学院">
+            <td class="rank">30</td>
+            <td><a href="https://chalaoshi.de/t/4094/" target="_blank" rel="noopener">自然语言处理导论</a><small>汤斯亮 · 信息科学与工程学院</small></td>
+            <td class="score">76.0</td>
+            <td class="gpa">4.68</td>
+            <td>447</td>
+            <td>未知</td>
+            <td>未知</td>
+            <td><span class="tag">GPA 4.68</span><span class="tag">447 个样本</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="课程综合实践ⅰ 肖俊 计算机科学与技术学院">
+            <td class="rank">31</td>
+            <td><a href="https://chalaoshi.de/t/1763/" target="_blank" rel="noopener">课程综合实践Ⅰ</a><small>肖俊 · 计算机科学与技术学院</small></td>
+            <td class="score">76.0</td>
+            <td class="gpa">4.64</td>
+            <td>216</td>
+            <td>9.82</td>
+            <td>32.9%</td>
+            <td><span class="tag">GPA 4.64</span><span class="tag">216 个样本</span><span class="tag">评论偏轻松</span><span class="tag">相关</span></td>
+          </tr>
+          <tr data-search="计算程序设计训练 陈建军 公共管理学院">
+            <td class="rank">32</td>
+            <td><a href="https://chalaoshi.de/t/529/" target="_blank" rel="noopener">计算程序设计训练</a><small>陈建军 · 公共管理学院</small></td>
+            <td class="score">76.0</td>
+            <td class="gpa">4.53</td>
+            <td>115</td>
+            <td>8.69</td>
+            <td>22.4%</td>
+            <td><span class="tag">GPA 4.53</span><span class="tag">115 个样本</span><span class="tag">点名率 22%</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="出土文献研究 杨琼 人文学院">
+            <td class="rank">33</td>
+            <td><a href="https://chalaoshi.de/t/6668/" target="_blank" rel="noopener">出土文献研究</a><small>杨琼 · 人文学院</small></td>
+            <td class="score">75.9</td>
+            <td class="gpa">4.68</td>
+            <td>95</td>
+            <td>9.62</td>
+            <td>0.0%</td>
+            <td><span class="tag">GPA 4.68</span><span class="tag">95 个样本</span><span class="tag">点名率 0%</span></td>
+          </tr>
+          <tr data-search="专题设计训练 包红泽 建筑工程学院">
+            <td class="rank">34</td>
+            <td><a href="https://chalaoshi.de/t/3236/" target="_blank" rel="noopener">专题设计训练</a><small>包红泽 · 建筑工程学院</small></td>
+            <td class="score">75.6</td>
+            <td class="gpa">4.91</td>
+            <td>107</td>
+            <td>9.76</td>
+            <td>28.1%</td>
+            <td><span class="tag">GPA 4.91</span><span class="tag">107 个样本</span><span class="tag">点名率 28%</span></td>
+          </tr>
+          <tr data-search="数学暑期学校a 张挺 数学科学学院">
+            <td class="rank">35</td>
+            <td><a href="https://chalaoshi.de/t/1550/" target="_blank" rel="noopener">数学暑期学校A</a><small>张挺 · 数学科学学院</small></td>
+            <td class="score">75.5</td>
+            <td class="gpa">4.87</td>
+            <td>64</td>
+            <td>9.24</td>
+            <td>23.6%</td>
+            <td><span class="tag">GPA 4.87</span><span class="tag">64 个样本</span><span class="tag">点名率 24%</span></td>
+          </tr>
+          <tr data-search="经济法 周黎明 经济学院">
+            <td class="rank">36</td>
+            <td><a href="https://chalaoshi.de/t/391/" target="_blank" rel="noopener">经济法</a><small>周黎明 · 经济学院</small></td>
+            <td class="score">75.5</td>
+            <td class="gpa">4.43</td>
+            <td>455</td>
+            <td>9.99</td>
+            <td>6.7%</td>
+            <td><span class="tag">GPA 4.43</span><span class="tag">455 个样本</span><span class="tag">点名率 7%</span><span class="tag">评论偏轻松</span></td>
+          </tr>
+          <tr data-search="课程综合实践ⅱ 宋宏伟 计算机科学与技术学院">
+            <td class="rank">37</td>
+            <td><a href="https://chalaoshi.de/t/1251/" target="_blank" rel="noopener">课程综合实践Ⅱ</a><small>宋宏伟 · 计算机科学与技术学院</small></td>
+            <td class="score">75.0</td>
+            <td class="gpa">4.90</td>
+            <td>83</td>
+            <td>未知</td>
+            <td>未知</td>
+            <td><span class="tag">GPA 4.90</span><span class="tag">83 个样本</span><span class="tag">相关</span></td>
+          </tr>
+          <tr data-search="社会调查 俞彬 经济学院">
+            <td class="rank">38</td>
+            <td><a href="https://chalaoshi.de/t/3464/" target="_blank" rel="noopener">社会调查</a><small>俞彬 · 经济学院</small></td>
+            <td class="score">75.0</td>
+            <td class="gpa">4.64</td>
+            <td>332</td>
+            <td>9.91</td>
+            <td>12.4%</td>
+            <td><span class="tag">GPA 4.64</span><span class="tag">332 个样本</span><span class="tag">点名率 12%</span><span class="tag">评论偏轻松</span></td>
+          </tr>
+          <tr data-search="大学生朋辈心理辅导 蔡云 数学科学学院">
+            <td class="rank">39</td>
+            <td><a href="https://chalaoshi.de/t/3671/" target="_blank" rel="noopener">大学生朋辈心理辅导</a><small>蔡云 · 数学科学学院</small></td>
+            <td class="score">74.8</td>
+            <td class="gpa">4.59</td>
+            <td>307</td>
+            <td>9.98</td>
+            <td>30.5%</td>
+            <td><span class="tag">GPA 4.59</span><span class="tag">307 个样本</span><span class="tag">评论偏轻松</span></td>
+          </tr>
+          <tr data-search="印度宗教哲学 何欢欢 人文学院">
+            <td class="rank">40</td>
+            <td><a href="https://chalaoshi.de/t/5038/" target="_blank" rel="noopener">印度宗教哲学</a><small>何欢欢 · 人文学院</small></td>
+            <td class="score">74.7</td>
+            <td class="gpa">4.83</td>
+            <td>30</td>
+            <td>9.85</td>
+            <td>20.0%</td>
+            <td><span class="tag">GPA 4.83</span><span class="tag">点名率 20%</span></td>
+          </tr>
+          <tr data-search="当代中国文艺理论思潮研究 朱首献 人文学院">
+            <td class="rank">41</td>
+            <td><a href="https://chalaoshi.de/t/1491/" target="_blank" rel="noopener">当代中国文艺理论思潮研究</a><small>朱首献 · 人文学院</small></td>
+            <td class="score">74.7</td>
+            <td class="gpa">4.63</td>
+            <td>457</td>
+            <td>9.91</td>
+            <td>33.3%</td>
+            <td><span class="tag">GPA 4.63</span><span class="tag">457 个样本</span><span class="tag">评论偏轻松</span></td>
+          </tr>
+          <tr data-search="计算机科学思想史 霍宇驰 计算机科学与技术学院">
+            <td class="rank">42</td>
+            <td><a href="https://chalaoshi.de/t/6945/" target="_blank" rel="noopener">计算机科学思想史</a><small>霍宇驰 · 计算机科学与技术学院</small></td>
+            <td class="score">74.7</td>
+            <td class="gpa">4.53</td>
+            <td>406</td>
+            <td>9.24</td>
+            <td>20.0%</td>
+            <td><span class="tag">GPA 4.53</span><span class="tag">406 个样本</span><span class="tag">点名率 20%</span><span class="tag">相关</span></td>
+          </tr>
+          <tr data-search="基于人工智能的国画传承与创新 陈为 计算机科学与技术学院">
+            <td class="rank">43</td>
+            <td><a href="https://chalaoshi.de/t/3375/" target="_blank" rel="noopener">基于人工智能的国画传承与创新</a><small>陈为 · 计算机科学与技术学院</small></td>
+            <td class="score">74.7</td>
+            <td class="gpa">4.43</td>
+            <td>45</td>
+            <td>4.76</td>
+            <td>28.6%</td>
+            <td><span class="tag">GPA 4.43</span><span class="tag">点名率 29%</span><span class="tag">评论偏轻松</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="软件安全 吴磊 地球科学学院">
+            <td class="rank">44</td>
+            <td><a href="https://chalaoshi.de/t/3494/" target="_blank" rel="noopener">软件安全</a><small>吴磊 · 地球科学学院</small></td>
+            <td class="score">74.5</td>
+            <td class="gpa">4.68</td>
+            <td>72</td>
+            <td>5.41</td>
+            <td>43.8%</td>
+            <td><span class="tag">GPA 4.68</span><span class="tag">72 个样本</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="智能制造与企业自动化 赵均 控制科学与工程学院">
+            <td class="rank">45</td>
+            <td><a href="https://chalaoshi.de/t/517/" target="_blank" rel="noopener">智能制造与企业自动化</a><small>赵均 · 控制科学与工程学院</small></td>
+            <td class="score">74.4</td>
+            <td class="gpa">4.34</td>
+            <td>301</td>
+            <td>8.39</td>
+            <td>12.8%</td>
+            <td><span class="tag">301 个样本</span><span class="tag">点名率 13%</span><span class="tag">评论偏轻松</span><span class="tag">相关</span></td>
+          </tr>
+          <tr data-search="软件安全原理和实践 吴磊 地球科学学院">
+            <td class="rank">46</td>
+            <td><a href="https://chalaoshi.de/t/3494/" target="_blank" rel="noopener">软件安全原理和实践</a><small>吴磊 · 地球科学学院</small></td>
+            <td class="score">74.1</td>
+            <td class="gpa">4.70</td>
+            <td>120</td>
+            <td>5.41</td>
+            <td>43.8%</td>
+            <td><span class="tag">GPA 4.70</span><span class="tag">120 个样本</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="面向对象程序设计 陈翔 计算机科学与技术学院">
+            <td class="rank">47</td>
+            <td><a href="https://chalaoshi.de/t/4615/" target="_blank" rel="noopener">面向对象程序设计</a><small>陈翔 · 计算机科学与技术学院</small></td>
+            <td class="score">74.1</td>
+            <td class="gpa">4.30</td>
+            <td>493</td>
+            <td>9.76</td>
+            <td>19.0%</td>
+            <td><span class="tag">493 个样本</span><span class="tag">点名率 19%</span><span class="tag">强相关</span></td>
+          </tr>
+          <tr data-search="绘画基础 王钟涛 人文学院">
+            <td class="rank">48</td>
+            <td><a href="https://chalaoshi.de/t/3072/" target="_blank" rel="noopener">绘画基础</a><small>王钟涛 · 人文学院</small></td>
+            <td class="score">74.0</td>
+            <td class="gpa">4.78</td>
+            <td>166</td>
+            <td>9.58</td>
+            <td>32.7%</td>
+            <td><span class="tag">GPA 4.78</span><span class="tag">166 个样本</span></td>
+          </tr>
+          <tr data-search="形而上学 曾劭恺 人文学院">
+            <td class="rank">49</td>
+            <td><a href="https://chalaoshi.de/t/5419/" target="_blank" rel="noopener">形而上学</a><small>曾劭恺 · 人文学院</small></td>
+            <td class="score">73.9</td>
+            <td class="gpa">4.72</td>
+            <td>39</td>
+            <td>9.46</td>
+            <td>4.3%</td>
+            <td><span class="tag">GPA 4.72</span><span class="tag">点名率 4%</span></td>
+          </tr>
+          <tr data-search="计算医疗 黄正行 生物医学工程与仪器科学学院">
+            <td class="rank">50</td>
+            <td><a href="https://chalaoshi.de/t/3761/" target="_blank" rel="noopener">计算医疗</a><small>黄正行 · 生物医学工程与仪器科学学院</small></td>
+            <td class="score">73.9</td>
+            <td class="gpa">4.68</td>
+            <td>133</td>
+            <td>9.38</td>
+            <td>15.8%</td>
+            <td><span class="tag">GPA 4.68</span><span class="tag">133 个样本</span><span class="tag">点名率 16%</span><span class="tag">评论偏轻松</span></td>
+          </tr></tbody>
+      </table>
+      <div id="empty" class="empty" hidden>没有匹配的结果。</div>
+    </div>
+  </main>
+  <footer>结果来自本地公开数据快照。GPA 是课程维度；老师评分、点名率和部分评论是老师维度。自然语言采用规则解析，选课前请核对当学期开课信息与培养方案。</footer>
+  <script>
+    const search = document.getElementById("search");
+    const rows = [...document.querySelectorAll("#rows tr")];
+    search.addEventListener("input", () => {
+      const query = search.value.trim().toLowerCase();
+      let visible = 0;
+      rows.forEach(row => {
+        const show = !query || row.dataset.search.includes(query);
+        row.hidden = !show;
+        if (show) visible += 1;
+      });
+      document.getElementById("count").textContent = `${visible} 个结果`;
+      document.getElementById("empty").hidden = visible !== 0;
+    });
+  </script>
+</body>
+</html>
